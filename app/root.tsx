@@ -13,6 +13,16 @@ import toyotaLogo from "app/assets/toyota-logo.png"
 import { AuthProvider } from "~/contexts/AuthContext";
 import { BlogProvider } from "~/contexts/BlogContext";
 
+import type { MetaFunction } from "react-router";
+
+export const meta: MetaFunction = () => {
+  return [
+    { title: "TMMIN Engine Plant 3" },
+    { name: "description", content: "Company Profile TMMIN Engine Plant 3" }
+  ];
+};
+
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -32,7 +42,6 @@ export function Layout() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>TMMIN Engine Plant 3</title>
         <link rel="icon" type="image/png" href="https://www.toyota.co.id/img/tmmin-icon.png" />
         <meta property="og:title" content="TMMIN Engine Plant 3" />
         <meta
