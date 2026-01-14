@@ -44,7 +44,7 @@ export function Layout() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" href="https://www.toyota.co.id/img/tmmin-icon.png" />
         <meta property="og:title" content="TMMIN Engine Plant 3" />
-        <meta
+        <meta title="TMMIN Engine Plant 3"
           property="og:image"
           content="https://www.toyota.co.id/img/tmmin-icon.png"
         />
