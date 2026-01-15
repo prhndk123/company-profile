@@ -19,8 +19,8 @@ import heroImage from "~/assets/hero-manufacturing.jpg";
 import { CountUp } from "~/components/ui/counter";
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "TMMIN Engine Plant 3" },
+    { name: "description", content: "Welcome to TMMIN Engine Plant 3" },
   ];
 }
 
