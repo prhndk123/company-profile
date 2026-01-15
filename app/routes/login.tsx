@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, Navigate, Link } from "react-router";
+import { useNavigate, Navigate, Link, redirect } from "react-router";
 import { motion } from "framer-motion";
 import { Mail, Lock, ArrowRight } from "lucide-react";
 import { Button } from "~/components/ui/button";
@@ -13,6 +13,10 @@ import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "~/store/auth.store";
 import { loginSchema, type LoginSchema } from "~/schemas/auth.schema";
 
+export const clientLoader = () => {
+  const user = useAuthStore.getState().user;
+  if (user) return redirect("/");
+};
 const Login = () => {
   const { isAuthenticated, login } = useAuthStore();
   const { toast } = useToast();

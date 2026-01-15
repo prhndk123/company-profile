@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthState>()(
             name: data.name,
             email: data.email,
           },
-          token: data.token,
+          token: data.userToken,
           isAuthenticated: true,
         });
       },
