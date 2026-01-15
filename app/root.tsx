@@ -2,6 +2,7 @@ import {
   isRouteErrorResponse,
   Links,
   Meta,
+  MetaFunction,
   Outlet,
   Scripts,
   ScrollRestoration,
@@ -13,15 +14,9 @@ import toyotaLogo from "app/assets/toyota-logo.png"
 import { AuthProvider } from "~/contexts/AuthContext";
 import { BlogProvider } from "~/contexts/BlogContext";
 
-import type { MetaFunction } from "react-router";
-
-export const meta: MetaFunction = () => {
-  return [
-    { title: "TMMIN Engine Plant 3" },
-    { name: "description", content: "Company Profile TMMIN Engine Plant 3" }
-  ];
-};
-
+export const meta: MetaFunction = () => [
+  { title: "TMMIN Engine Plant 3" }
+];
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
