@@ -12,6 +12,7 @@ import {
   Quote,
 } from "lucide-react";
 import { Button } from "~/components/ui/button";
+import heroImage from "~/assets/operator2.jpg";
 
 const engines = [
   {
@@ -146,8 +147,20 @@ const Services = () => {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 bg-gradient-hero">
-        <div className="container-wide">
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroImage})`,
+          }}
+        />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-linear-to-r from-foreground/95 via-foreground/80 to-foreground/40" />
+
+        {/* Content */}
+        <div className="relative z-10 container-wide">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -160,10 +173,12 @@ const Services = () => {
                 Our Products
               </span>
             </div>
+
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-background leading-tight mb-6">
               Precision-Engineered
               <span className="block text-primary">Engine Solutions</span>
             </h1>
+
             <p className="text-lg md:text-xl text-background/80 leading-relaxed">
               Discover the range of world-class engines manufactured at Toyota
               Motor Manufacturing Indonesia Engine Plant #3 Karawang.

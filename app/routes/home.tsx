@@ -15,8 +15,10 @@ import {
 } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
-import heroImage from "~/assets/hero-manufacturing.jpg";
+import heroImage from "~/assets/plant.webp";
+import engine from "~/assets/engine.webp";
 import { CountUp } from "~/components/ui/counter";
+import { Layout } from "~/root";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "TMMIN Engine Plant 3" },
@@ -82,6 +84,7 @@ const stagger = {
 
 const Home = () => {
   return (
+
     <>
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center px-4">
@@ -216,7 +219,7 @@ const Home = () => {
             >
               <div className="aspect-4/3 bg-surface-steel rounded overflow-hidden">
                 <img
-                  src="https://images.unsplash.com/photo-1565043666747-69f6646db940?w=800&auto=format&fit=crop"
+                  src={engine}
                   alt="Engine assembly line"
                   className="w-full h-full object-cover"
                 />
