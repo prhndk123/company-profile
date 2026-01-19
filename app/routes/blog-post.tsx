@@ -1,29 +1,42 @@
-import { useParams, Link } from "react-router";
-import { useBlogStore } from "~/store/blog.store";
-import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Calendar, Tag, User } from "lucide-react";
+import { Link, useParams } from "react-router";
 import { Button } from "~/components/ui/button";
-import { motion } from 'framer-motion';
-import { Calendar, User, Tag, ArrowLeft, ArrowRight } from 'lucide-react';
+import { blogService } from "~/services/blog.service";
 
 export default function BlogPost() {
-  const params = useParams();
-  const id = Number(params.id);
+  const { id } = useParams();
+  const postId = Number(id);
 
-  const { getPostById, fetchPosts, posts } = useBlogStore();
-
-  useEffect(() => {
-    if (!posts.length) {
-      fetchPosts();
-    }
-  }, [posts.length, fetchPosts]);
-
-  if (Number.isNaN(id)) {
+  if (Number.isNaN(postId)) {
     return <p className="p-8">Invalid post ID</p>;
   }
 
-  const post = getPostById(id);
+  const { data: posts = [] } = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getPosts,
+  });
 
-  if (!post) {
+  const {
+    data: post,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["blog", postId],
+    queryFn: async () => {
+      const posts = await blogService.getPosts();
+      return posts.find((p) => p.id === postId);
+    },
+  });
+
+  if (isLoading) {
+    return (
+      <p className="p-8 flex items-center justify-center">Loading post...</p>
+    );
+  }
+
+  if (isError || !post) {
     return (
       <>
         <div className="min-h-[60vh] flex items-center justify-center">
@@ -50,7 +63,7 @@ export default function BlogPost() {
       day: "numeric",
     });
   };
-  const currentIndex = posts.findIndex((p) => p.id === id);
+  const currentIndex = posts.findIndex((p) => p.id === postId);
   const prevPost = currentIndex > 0 ? posts[currentIndex - 1] : null;
   const nextPost =
     currentIndex < posts.length - 1 ? posts[currentIndex + 1] : null;
@@ -64,29 +77,29 @@ export default function BlogPost() {
             animate={{ opacity: 1, y: 0 }}
             className="max-w-3xl"
           >
-            <Link 
+            <Link
               to="/blog"
               className="inline-flex items-center gap-2 text-background/80 hover:text-background mb-6 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to Blog
             </Link>
-            
+
             <div className="flex items-center gap-4 text-sm text-background/70 mb-4">
               <span className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                {formatDate(post.publishDate)}
+                {formatDate(post.created)}
               </span>
               <span className="flex items-center gap-1">
                 <Tag className="w-4 h-4" />
                 {post.category}
               </span>
             </div>
-            
+
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold text-background leading-tight mb-6">
               {post.title}
             </h1>
-            
+
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-background/20 rounded-full flex items-center justify-center">
                 <User className="w-6 h-6 text-background" />
@@ -127,8 +140,12 @@ export default function BlogPost() {
             transition={{ delay: 0.3 }}
             className="prose prose-lg max-w-none"
           >
-            <p className="text-xl text-body leading-relaxed mb-8">{post.excerpt}</p>
-            <div className="text-body leading-relaxed whitespace-pre-wrap">{post.content}</div>
+            <p className="text-xl text-body leading-relaxed mb-8">
+              {post.excerpt}
+            </p>
+            <div className="text-body leading-relaxed whitespace-pre-wrap">
+              {post.content}
+            </div>
           </motion.div>
 
           {/* Post Navigation */}
@@ -152,7 +169,7 @@ export default function BlogPost() {
                 <Link
                   to={`/blog/${nextPost.id}`}
                   className={`group p-6 bg-surface-industrial rounded hover:bg-surface-steel transition-colors ${
-                    !prevPost ? 'md:col-start-2' : ''
+                    !prevPost ? "md:col-start-2" : ""
                   }`}
                 >
                   <span className="text-sm text-muted-foreground mb-2 flex items-center justify-end gap-1">

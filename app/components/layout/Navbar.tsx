@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { Menu, X } from "lucide-react";
 import { Button } from "~/components/ui/button";
-import { useAuth } from "~/contexts/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import toyotaLogo from "~/assets/toyota-logo.png";
 import { useAuthStore } from "~/store/auth.store";
@@ -115,7 +114,15 @@ const Navbar = () => {
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
-            {isOpen ? <X className= {`w-6 h-6 ${isSticky ? "text-white" : "text-black"}`} /> : <Menu className= {`w-6 h-6 ${isSticky ? "text-white" : "text-black"}`} />}
+            {isOpen ? (
+              <X
+                className={`w-6 h-6 ${isSticky ? "text-white" : "text-black"}`}
+              />
+            ) : (
+              <Menu
+                className={`w-6 h-6 ${isSticky ? "text-white" : "text-black"}`}
+              />
+            )}
           </button>
         </div>
 

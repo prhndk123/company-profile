@@ -1,6 +1,7 @@
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { Linkedin, Mail } from "lucide-react";
-import { useEffect, useState } from "react";
+import heroImage from "~/assets/plant.webp";
 import { Teams } from "~/schemas/team.schema";
 import { teamService } from "~/services/team.service";
 
@@ -10,32 +11,32 @@ const fadeIn = {
 };
 
 const Teams = () => {
-  const [teams, setTeams] = useState<Teams[]>([]);
-  const [error, setError] = useState<String | null>("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTeams = async () => {
-      try {
-        const data = await teamService.getTeams();
-        setTeams(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load leadership data"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTeams();
-  }, []);
+  const {
+    data: teams,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["teams"],
+    queryFn: () => teamService.getTeams(),
+  });
 
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 bg-gradient-hero">
-        <div className="container-wide">
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroImage})`,
+          }}
+        />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-linear-to-r from-foreground/95 via-foreground/80 to-foreground/40" />
+
+        {/* Content */}
+        <div className="relative z-10 container-wide">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -87,7 +88,7 @@ const Teams = () => {
             </p>
           </motion.div>
 
-          {loading ? (
+          {isPending ? (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
               {Array.from({ length: 12 }).map((_, index) => (
                 <div
@@ -105,7 +106,7 @@ const Teams = () => {
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-              {teams.map((team, index) => (
+              {teams?.map((team, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0, y: 20 }}

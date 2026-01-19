@@ -1,18 +1,18 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router";
 import {
   ArrowRight,
-  Zap,
-  Gauge,
-  Leaf,
-  Shield,
-  Cog,
   Award,
   CheckCircle2,
+  Cog,
+  Gauge,
+  Leaf,
   Quote,
+  Shield,
+  Zap,
 } from "lucide-react";
-import { Button } from "~/components/ui/button";
+import { Link } from "react-router";
 import heroImage from "~/assets/operator2.jpg";
+import { Button } from "~/components/ui/button";
 
 const engines = [
   {
@@ -272,7 +272,7 @@ const Services = () => {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground px-6 py-3 rounded">
+                  <div className="absolute -bottom-4 right-0 md:-right-4 lg:-right-4 bg-primary text-primary-foreground px-6 py-3 rounded">
                     <span className="font-heading font-bold">
                       {engine.name}
                     </span>

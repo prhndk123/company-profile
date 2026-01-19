@@ -1,8 +1,8 @@
-import { useNavigate, Navigate, Link } from "react-router";
-import { motion } from "framer-motion";
-import { Mail, Lock, User, ArrowRight } from "lucide-react";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { ArrowRight, Lock, Mail, User } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, Navigate, useNavigate } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -56,54 +56,66 @@ const Register = () => {
         className="w-full max-w-md"
       >
         <h1 className="text-3xl font-bold mb-2">Create Account</h1>
-        <p className="text-muted-foreground mb-8">
-          Join the TMMIN community.
-        </p>
+        <p className="text-muted-foreground mb-8">Join the TMMIN community.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <Label>Full Name</Label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input {...register("name")} className="pl-10" />
+              <Input
+                {...register("name")}
+                className="pl-10"
+                placeholder="Enter your name"
+              />
             </div>
             {errors.name && (
               <p className="text-sm text-red-500">{errors.name.message}</p>
             )}
           </div>
 
-          <div>
-            <Label>Email</Label>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-              <Input {...register("email")} className="pl-10" />
+              <Input
+                {...register("email")}
+                className="pl-10"
+                placeholder="Enter your email"
+              />
             </div>
             {errors.email && (
               <p className="text-sm text-red-500">{errors.email.message}</p>
             )}
           </div>
 
-          <div>
-            <Label>Password</Label>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               <Input
                 {...register("password")}
+                placeholder="Enter your password"
                 type="password"
                 className="pl-10"
               />
             </div>
             {errors.password && (
-              <p className="text-sm text-red-500">
-                {errors.password.message}
-              </p>
+              <p className="text-sm text-red-500">{errors.password.message}</p>
             )}
           </div>
 
-          <Button className="w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Processing..." : (
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              "Processing..."
+            ) : (
               <>
-                Create Account <ArrowRight className="ml-2 w-4 h-4" />
+                Create Account <ArrowRight className="w-4 h-4 ml-2" />
               </>
             )}
           </Button>

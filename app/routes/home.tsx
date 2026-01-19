@@ -1,24 +1,22 @@
-import type { Route } from "./+types/home";
-import { Link } from "react-router";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  Award,
-  Shield,
-  Zap,
-  Target,
-  Users,
-  Factory,
   ChevronRight,
-  Quote,
+  Factory,
   Leaf,
+  Quote,
+  Shield,
+  Users,
+  Zap,
 } from "lucide-react";
+import { Link } from "react-router";
+import type { Route } from "./+types/home";
 
-import { Button } from "~/components/ui/button";
-import heroImage from "~/assets/plant.webp";
 import engine from "~/assets/engine.webp";
+import heroImage from "~/assets/plant.webp";
+import { Button } from "~/components/ui/button";
 import { CountUp } from "~/components/ui/counter";
-import { Layout } from "~/root";
+// import { Layout } from "~/root";
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "TMMIN Engine Plant 3" },
@@ -43,13 +41,13 @@ const products = [
   {
     title: "NR-Hybrid Series Engines",
     description:
-    "Cutting-edge hybrid systems combining efficiency with environmental responsibility.",
+      "Cutting-edge hybrid systems combining efficiency with environmental responsibility.",
     icon: Leaf,
   },
   {
     title: "TNGA Series Engines",
     description:
-    "High-performance multi purpose engines delivering exceptional power and reliability for demanding applications.",
+      "High-performance multi purpose engines delivering exceptional power and reliability for demanding applications.",
     icon: Shield,
   },
 ];
@@ -84,7 +82,6 @@ const stagger = {
 
 const Home = () => {
   return (
-
     <>
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center px-4">
@@ -193,9 +190,10 @@ const Home = () => {
               <p className="text-body mb-6 leading-relaxed">
                 Toyota Motor Manufacturing Indonesia (TMMIN) Engine Plant #3
                 stands at the forefront of automotive engine production in
-                Southeast Asia. Located in the strategic Karawang International Industrial
-                City (KIIC), our facility integrates advanced manufacturing
-                technologies with Toyota's renowned production philosophy.
+                Southeast Asia. Located in the strategic Karawang International
+                Industrial City (KIIC), our facility integrates advanced
+                manufacturing technologies with Toyota's renowned production
+                philosophy.
               </p>
               <p className="text-body mb-8 leading-relaxed">
                 Since our establishment, we have been committed to producing
@@ -256,8 +254,8 @@ const Home = () => {
               World-Class Engine Solutions
             </h2>
             <p className="text-body">
-              From fuel-efficient compact engines to high-performance
-              multi purpose, we deliver precision-engineered solutions for every
+              From fuel-efficient compact engines to high-performance multi
+              purpose, we deliver precision-engineered solutions for every
               driving need.
             </p>
           </motion.div>

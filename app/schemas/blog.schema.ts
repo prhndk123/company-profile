@@ -11,7 +11,7 @@ export const BlogPostSchema = z.object({
   content: z.string(),
   author: z.string(),
   category: z.string(),
-  publishDate: z.number(),
+  created: z.number(),
   imageUrl: z.string().optional(),
 });
 

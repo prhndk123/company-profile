@@ -8,15 +8,12 @@ import {
   ScrollRestoration,
 } from "react-router";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import type { Route } from "./+types/root";
 import "./app.css";
-import toyotaLogo from "app/assets/toyota-logo.png"
-import { AuthProvider } from "~/contexts/AuthContext";
-import { BlogProvider } from "~/contexts/BlogContext";
+import { queryClient } from "./lib/query-client";
 
-export const meta: MetaFunction = () => [
-  { title: "TMMIN Engine Plant 3" }
-];
+export const meta: MetaFunction = () => [{ title: "TMMIN Engine Plant 3" }];
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -37,9 +34,14 @@ export function Layout() {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" type="image/png" href="https://www.toyota.co.id/img/tmmin-icon.png" />
+        <link
+          rel="icon"
+          type="image/png"
+          href="https://www.toyota.co.id/img/tmmin-icon.png"
+        />
         <meta property="og:title" content="TMMIN Engine Plant 3" />
-        <meta title="TMMIN Engine Plant 3"
+        <meta
+          title="TMMIN Engine Plant 3"
           property="og:image"
           content="https://www.toyota.co.id/img/tmmin-icon.png"
         />
@@ -47,8 +49,9 @@ export function Layout() {
         <Links />
       </head>
       <body>
-        <Outlet />
-
+        <QueryClientProvider client={queryClient}>
+          <Outlet />
+        </QueryClientProvider>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -57,5 +60,34 @@ export function Layout() {
 }
 
 export default function App() {
-  return null;
+  return <Outlet />;
+}
+
+export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  let message = "Oops!";
+  let details = "An unexpected error occurred.";
+  let stack: string | undefined;
+
+  if (isRouteErrorResponse(error)) {
+    message = error.status === 404 ? "404" : "Error";
+    details =
+      error.status === 404
+        ? "The requested page could not be found."
+        : error.statusText || details;
+  } else if (import.meta.env.DEV && error && error instanceof Error) {
+    details = error.message;
+    stack = error.stack;
+  }
+
+  return (
+    <main className="pt-16 p-4 container mx-auto">
+      <h1>{message}</h1>
+      <p>{details}</p>
+      {stack && (
+        <pre className="w-full p-4 overflow-x-auto">
+          <code>{stack}</code>
+        </pre>
+      )}
+    </main>
+  );
 }

@@ -6,8 +6,6 @@ export default [
     route("/about", "routes/about.tsx"),
     route("/services", "routes/services.tsx"),
     route("/teams", "routes/teams.tsx"),
-    route("/login", "routes/login.tsx"),
-    route("/register", "routes/register.tsx"),
 
     ...prefix("/blog", [
       index("routes/blog.tsx"),
@@ -15,6 +13,9 @@ export default [
       route("/:id", "routes/blog-post.tsx"),
     ]),
   ]),
+
+  route("/login", "routes/login.tsx"),
+  route("/register", "routes/register.tsx"),
 
   route("*", "routes/not-found.tsx"),
 ] satisfies RouteConfig;

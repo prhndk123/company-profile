@@ -20,6 +20,8 @@ import {
 import { useEffect, useState } from "react";
 import { Leadership } from "~/schemas/leadership.schema";
 import { LeadershipService } from "~/services/leadership.service";
+import heroImage from "~/assets/plant.webp";
+import { useQuery } from "@tanstack/react-query";
 
 const milestones = [
   {
@@ -90,22 +92,26 @@ const values = [
   {
     icon: Handshake,
     title: "Ownership",
-    description: "Kami bertindak dengan penuh rasa memiliki, mengambil tanggung jawab untuk berupaya semaksimal mungkin mencapai hasil yang terbaik.",
+    description:
+      "Kami bertindak dengan penuh rasa memiliki, mengambil tanggung jawab untuk berupaya semaksimal mungkin mencapai hasil yang terbaik.",
   },
   {
     icon: Lightbulb,
     title: "Innovativeness",
-    description: "Kami mewujudkan ide-ide breakthrough dan aktivitas unik dalam rangka merealisasikan perubahan dan transformasi demi peningkatan daya saing perusahaan.",
+    description:
+      "Kami mewujudkan ide-ide breakthrough dan aktivitas unik dalam rangka merealisasikan perubahan dan transformasi demi peningkatan daya saing perusahaan.",
   },
   {
     icon: HeartHandshake,
     title: "Teamwork",
-    description: "Kami mendukung satu sama lain seraya menjalankan tanggung jawab diri sendiri demi meningkatkan kekuatan tim, membangun sinergi melalui rantai proses yang terintegrasi serta menjalin hubungan yang harmonis dengan stakeholder untuk meraih keberhasilan bersama.",
+    description:
+      "Kami mendukung satu sama lain seraya menjalankan tanggung jawab diri sendiri demi meningkatkan kekuatan tim, membangun sinergi melalui rantai proses yang terintegrasi serta menjalin hubungan yang harmonis dengan stakeholder untuk meraih keberhasilan bersama.",
   },
   {
     icon: MessageCircleWarning,
     title: "Bad News First",
-    description: "Kami memiliki keteguhan hati untuk mengemukakan permasalahan (bad news) dengan segera disertai fakta dan data yang memadai untuk dapat mengambil langkah penanganan secara cepat dan tepat.",
+    description:
+      "Kami memiliki keteguhan hati untuk mengemukakan permasalahan (bad news) dengan segera disertai fakta dan data yang memadai untuk dapat mengambil langkah penanganan secara cepat dan tepat.",
   },
 ];
 
@@ -115,34 +121,33 @@ const fadeIn = {
 };
 
 const About = () => {
-  const [leadership, setLeadership] = useState<Leadership[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: leadership,
+    isPending,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["leaderships"],
+    queryFn: () => LeadershipService.getAll(),
+  });
 
-  useEffect(() => {
-    const fetchLeadership = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const data = await LeadershipService.getAll();
-        setLeadership(data);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load leadership data"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLeadership();
-  }, []);
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 bg-gradient-hero">
-        <div className="container-wide">
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroImage})`,
+          }}
+        />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-linear-to-r from-foreground/95 via-foreground/80 to-foreground/40" />
+
+        {/* Content */}
+        <div className="relative z-10 container-wide">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -257,17 +262,19 @@ const About = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {loading && (
+            {isPending && (
               <p className="col-span-full text-center">Loading leadership...</p>
             )}
 
-            {error && (
-              <p className="col-span-full text-center text-red-500">{error}</p>
+            {isError && (
+              <p className="col-span-full text-center text-red-500">
+                {(error as Error).message}
+              </p>
             )}
 
-            {!loading &&
-              !error &&
-              leadership.map((leader, index) => (
+            {!isPending &&
+              !isError &&
+              leadership?.map((leader, index) => (
                 <motion.div
                   key={leader.objectId}
                   initial={{ opacity: 0, y: 20 }}

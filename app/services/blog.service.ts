@@ -2,45 +2,55 @@ import { axiosInstance } from "~/lib/axios";
 import {
   BlogListSchema,
   BlogPostSchema,
-  CreateBlog,
-  CreateBlogForm,
   CreateBlogSchema,
+  CreateBlog,
 } from "~/schemas/blog.schema";
 
 const TABLE = "/api/data/BlogPost";
 
+/** ===============================
+ * GET LAST ID
+ * =============================== */
+const getLastId = async (): Promise<number> => {
+  const res = await axiosInstance.get(
+    `${TABLE}?sortBy=id desc&pageSize=1`
+  );
+
+  if (!res.data?.length) return 0;
+  return res.data[0].id;
+};
+
+/** ===============================
+ * CREATE POST
+ * =============================== */
+const createPost = async (payload: Omit<CreateBlog, "id">) => {
+  const lastId = await getLastId();
+  const nextId = lastId + 1;
+
+  const payloadWithId = {
+    ...payload,
+    id: nextId,
+  };
+
+  console.log("FINAL PAYLOAD TO BACKEND:", payloadWithId);
+
+  // ✅ Zod validation
+  const validated = CreateBlogSchema.parse(payloadWithId);
+
+  const res = await axiosInstance.post(TABLE, validated);
+
+  return BlogPostSchema.parse(res.data);
+};
+
+/** ===============================
+ * GET POSTS
+ * =============================== */
+const getPosts = async () => {
+  const res = await axiosInstance.get(`${TABLE}?sortBy=%60created%60%20desc`);
+  return BlogListSchema.parse(res.data);
+};
+
 export const blogService = {
-  async getPosts() {
-    const res = await axiosInstance.get(TABLE);
-    return BlogListSchema.parse(res.data);
-  },
-
-  async getLastId(): Promise<number> {
-    const res = await axiosInstance.get(`${TABLE}?sortBy=id desc&pageSize=1`);
-    console.log(res);
-
-    if (!res.data.length) return 0;
-    return res.data[0].id;
-  },
-
-  async createPost(payload: Omit<CreateBlog, "id">) {
-    // 🔥 Ambil ID terakhir
-    const lastId = await this.getLastId();
-    const nextId = lastId + 1;
-
-    const payloadWithId = {
-      ...payload,
-      id: nextId,
-    };
-
-    console.log("FINAL PAYLOAD TO BACKEND:", payloadWithId);
-
-    // ✅ Validasi
-    const validated = CreateBlogSchema.parse(payloadWithId);
-
-    // ✅ Kirim ke Backendless
-    const res = await axiosInstance.post(TABLE, validated);
-
-    return BlogPostSchema.parse(res.data);
-  },
+  getPosts,
+  createPost,
 };

@@ -1,17 +1,14 @@
-import { useState } from "react";
-import { useNavigate, Navigate, Link, redirect } from "react-router";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
-import { Mail, Lock, ArrowRight } from "lucide-react";
+import { ArrowRight, Lock, Mail } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { Link, Navigate, redirect, useNavigate } from "react-router";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { axiosInstance } from "../lib/axios";
-import { useAuthStore } from "~/store/auth.store";
 import { loginSchema, type LoginSchema } from "~/schemas/auth.schema";
+import { useAuthStore } from "~/store/auth.store";
 
 export const clientLoader = () => {
   const user = useAuthStore.getState().user;

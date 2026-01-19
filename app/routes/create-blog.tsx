@@ -1,26 +1,29 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Navigate, useNavigate } from "react-router";
+import { Navigate, redirect, useNavigate } from "react-router";
+import { blogService } from "~/services/blog.service";
 import { useAuthStore } from "~/store/auth.store";
-import { useBlogStore } from "~/store/blog.store";
-import { CreateBlogFormSchema, CreateBlogSchema } from "~/schemas/blog.schema";
-import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Textarea } from "~/components/ui/textarea";
-import { Label } from "~/components/ui/label";
+
 import { motion } from "framer-motion";
 import { ArrowLeft, FileText } from "lucide-react";
-import { useToast } from '~/hooks/use-toast';
-
+import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Textarea } from "~/components/ui/textarea";
+import { useToast } from "~/hooks/use-toast";
+import { CreateBlogFormSchema } from "~/schemas/blog.schema";
 
 const categories = ["Manufacturing", "Innovation", "Sustainability"];
 
+export const clientLoader = () => {
+  const user = useAuthStore.getState().user;
+  if (!user) return redirect("/");
+};
 export default function CreateBlog() {
   const { isAuthenticated, user } = useAuthStore();
-  const { toast } = useToast();
-  const { createPost } = useBlogStore();
   const navigate = useNavigate();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const [form, setForm] = useState({
     title: "",
@@ -30,11 +33,31 @@ export default function CreateBlog() {
     content: "",
   });
 
+  /** ===============================
+   * MUTATION
+   * =============================== */
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: blogService.createPost,
+    onSuccess: () => {
+      toast({
+        title: "Success!",
+        description: "Your blog post has been published.",
+      });
+
+      // 🔥 REFRESH BLOG LIST
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+
+      navigate("/blog");
+    },
+  });
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  const submit = async () => {
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     const payload = {
       title: form.title.trim(),
       excerpt: form.excerpt.trim(),
@@ -42,28 +65,16 @@ export default function CreateBlog() {
       category: form.category,
       imageUrl: form.imageUrl || undefined,
       author: user!.name,
-      publishDate: Date.now(), // Backendless NUMBER ✔
+      publishDate: Date.now(),
     };
 
     const parsed = CreateBlogFormSchema.safeParse(payload);
     if (!parsed.success) {
-      console.error(parsed.error?.format());
       alert("Please fill all required fields correctly.");
       return;
     }
 
-    try {
-      setIsSubmitting(true);
-      await createPost(parsed.data);
-      console.log("PAYLOAD:", parsed.data);
-      toast({
-      title: 'Success!',
-      description: 'Your blog post has been published.',
-    });
-      navigate("/blog");
-    } finally {
-      setIsSubmitting(false);
-    }
+    await mutateAsync(parsed.data);
   };
 
   return (
@@ -204,10 +215,10 @@ export default function CreateBlog() {
                 <Button
                   type="submit"
                   size="lg"
-                  disabled={isSubmitting}
+                  disabled={isPending}
                   onClick={submit}
                 >
-                  {isSubmitting ? (
+                  {isPending ? (
                     <>
                       <span className="animate-spin mr-2">⏳</span>
                       Publishing...

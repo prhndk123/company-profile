@@ -1,53 +1,75 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
+import { ArrowRight, Calendar, Search, Tag, User } from "lucide-react";
+import { useState } from "react";
 import { Link } from "react-router";
-import { useBlogStore } from "~/store/blog.store";
+import heroImage from "~/assets/plant.webp";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
-import { motion } from "framer-motion";
-import { object } from "zod";
-import { log } from "console";
-import { ArrowRight, Calendar, Search, Tag, User } from "lucide-react";
+import { blogService } from "~/services/blog.service";
 
 const categories = ["All", "Manufacturing", "Innovation", "Sustainability"];
 
 export default function Blog() {
-  const { posts, fetchPosts, isLoading } = useBlogStore();
   const [selectedCategory, setCategory] = useState("All");
   const [search, setSearch] = useState("");
+
+  const {
+    data: posts = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["blogs"],
+    queryFn: blogService.getPosts,
+  });
 
   const fadeIn = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
 
-  useEffect(() => {
-    fetchPosts();
-  }, []);
-
   const filteredPosts = posts.filter((p) => {
-    const matchCategory = selectedCategory === "All" || p.category === selectedCategory;
+    const matchCategory =
+      selectedCategory === "All" || p.category === selectedCategory;
     const matchSearch =
       p.title.toLowerCase().includes(search.toLowerCase()) ||
       p.excerpt.toLowerCase().includes(search.toLowerCase());
     return matchCategory && matchSearch;
   });
 
-  // if (isLoading) return <p className="p-8">Loading...</p>;
-  // console.log(posts);
+  if (isLoading) {
+    return <p className="p-8">Loading blog...</p>;
+  }
+
+  if (isError) {
+    return <p className="p-8 text-red-500">Failed to load blog</p>;
+  }
 
   const formatDate = (timestamp: number) => {
-  return new Date(timestamp).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
+    return new Date(timestamp).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
   return (
     <>
       {/* Hero Section */}
-      <section className="relative py-24 md:py-32 bg-gradient-hero">
-        <div className="container-wide">
+      <section className="relative py-24 md:py-32 overflow-hidden">
+        {/* Background Image */}
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
+            backgroundImage: `url(${heroImage})`,
+          }}
+        />
+
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-linear-to-r from-foreground/95 via-foreground/80 to-foreground/40" />
+
+        {/* Content */}
+        <div className="relative z-10 container-wide">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -90,7 +112,9 @@ export default function Blog() {
               {categories.map((category) => (
                 <Button
                   key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
+                  variant={
+                    selectedCategory === category ? "default" : "outline"
+                  }
                   size="sm"
                   onClick={() => setCategory(category)}
                 >
@@ -103,9 +127,7 @@ export default function Blog() {
           {/* Posts Grid */}
           {filteredPosts.length === 0 ? (
             <div className="text-center py-16">
-
               <p className="text-lg text-muted-foreground">
-                
                 No articles found matching your criteria.
               </p>
             </div>
@@ -122,32 +144,38 @@ export default function Blog() {
                 >
                   <Link key={post.objectId} to={`/blog/${post.id}`}>
                     <div className="aspect-video overflow-hidden">
-                      <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <img
+                        src={post.imageUrl}
+                        alt={post.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
                     </div>
                   </Link>
                   <div className="p-6">
                     <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
                       <span className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4"/>
-                        {formatDate(post.publishDate)}
+                        <Calendar className="w-4 h-4" />
+                        {formatDate(post.created)}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Tag className="w-4 h-4"/>
+                        <Tag className="w-4 h-4" />
                         {post.category}
                       </span>
-                      </div>
-                      <Link to={`/blog/${post.id}`}>
+                    </div>
+                    <Link to={`/blog/${post.id}`}>
                       <h2 className="font-heading font-bold text-xl mb-3 group-hover:text-primary transition-colors line-clamp-2">
                         {post.title}
                       </h2>
                     </Link>
-                    <p className="text-body text-sm mb-4 line-clamp-3">{post.excerpt}</p>
+                    <p className="text-body text-sm mb-4 line-clamp-3">
+                      {post.excerpt}
+                    </p>
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2 text-sm text-muted-foreground">
                         <User className="w-4 h-4" />
                         {post.author}
                       </span>
-                      <Link 
+                      <Link
                         to={`/blog/${post.id}`}
                         className="inline-flex items-center gap-1 text-primary text-sm font-medium hover:gap-2 transition-all"
                       >
