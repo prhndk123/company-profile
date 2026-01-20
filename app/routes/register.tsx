@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
 import { ArrowRight, Lock, Mail, User } from "lucide-react";
 import { useForm } from "react-hook-form";
-import { Link, Navigate, useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
@@ -10,12 +10,12 @@ import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 
 import { registerSchema, type RegisterSchema } from "~/schemas/auth.schema";
+import { authService } from "~/services/auth.service";
 import { useAuthStore } from "~/store/auth.store";
 
 const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { register: registerUser, isAuthenticated } = useAuthStore();
 
   const {
     register,
@@ -25,26 +25,22 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  if (isAuthenticated) {
-    return <Navigate to="/" replace />;
-  }
-
   const onSubmit = async (data: RegisterSchema) => {
     try {
-      await registerUser(data);
+      await authService.register(data);
 
       toast({
         title: "Account created!",
         description: "Welcome to TMMIN.",
       });
 
-      navigate("/");
+      navigate("/login");
     } catch (error: any) {
-      toast({
-        title: "Signup failed",
-        description: error?.message ?? "Invalid input",
-        variant: "destructive",
-      });
+      if (error?.response?.status === 409) {
+        alert("Email already registered, Please use another email instead.");
+      }
+
+      alert("Signup failed");
     }
   };
 
@@ -59,7 +55,7 @@ const Register = () => {
         <p className="text-muted-foreground mb-8">Join the TMMIN community.</p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div>
+          <div className="space-y-2">
             <Label>Full Name</Label>
             <div className="relative">
               <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />

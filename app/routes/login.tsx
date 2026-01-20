@@ -9,6 +9,7 @@ import { Label } from "~/components/ui/label";
 import { useToast } from "~/hooks/use-toast";
 import { loginSchema, type LoginSchema } from "~/schemas/auth.schema";
 import { useAuthStore } from "~/store/auth.store";
+import toyotaLogo from "~/assets/toyota-logo.png";
 
 export const clientLoader = () => {
   const user = useAuthStore.getState().user;
@@ -34,18 +35,11 @@ const Login = () => {
     try {
       await login(data);
 
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
+      alert("Welcome back!, You have successfully logged in.");
 
       navigate("/");
     } catch (error: any) {
-      toast({
-        title: "Login failed",
-        description: error?.message ?? "Invalid credentials",
-        variant: "destructive",
-      });
+      alert("Login failed, Invalid credentials");
     }
   };
 
@@ -58,16 +52,15 @@ const Login = () => {
           className="w-full max-w-md"
         >
           <Link to="/" className="flex items-center gap-2 mb-8">
-            <div className="w-10 h-10 bg-primary rounded flex items-center justify-center">
-              <span className="text-primary-foreground font-heading font-bold text-lg">
-                T
-              </span>
-            </div>
-            <div>
-              <p className="font-heading font-bold text-sm">TOYOTA</p>
-              <p className="text-[10px] text-muted-foreground">
-                Engine Plant #3
-              </p>
+            <div className="flex flex-col items-center gap-2">
+              <div className="w-30 h-auto flex items-center justify-center">
+                <img src={toyotaLogo} alt="Toyota" className="" />
+              </div>
+              <div>
+                <p className="text-[10px] text-muted-foreground leading-tight">
+                  Engine Plant #3 Karawang
+                </p>
+              </div>
             </div>
           </Link>
 
