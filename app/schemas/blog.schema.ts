@@ -1,8 +1,6 @@
 import { z } from "zod";
 
-/** ===============================
- * RESPONSE DARI BACKENDLESS
- * =============================== */
+/* RESPONSE DARI BACKENDLESS */
 export const BlogPostSchema = z.object({
   id: z.number(),
   objectId: z.string(),
@@ -18,9 +16,7 @@ export const BlogPostSchema = z.object({
 /** LIST */
 export const BlogListSchema = z.array(BlogPostSchema);
 
-/** ===============================
- * FORM (UI ONLY – TANPA ID)
- * =============================== */
+/* FORM (UI ONLY – TANPA ID) */
 export const CreateBlogFormSchema = z.object({
   title: z.string().min(3),
   excerpt: z.string().min(10),
@@ -31,9 +27,7 @@ export const CreateBlogFormSchema = z.object({
   publishDate: z.number(),
 });
 
-/** ===============================
- * PAYLOAD CREATE (KE BACKEND)
- * =============================== */
+/* PAYLOAD CREATE (KE BACKEND)*/
 export const CreateBlogSchema = z.object({
   id: z.number(),
   title: z.string().min(3),

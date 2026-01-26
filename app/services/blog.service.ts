@@ -8,21 +8,15 @@ import {
 
 const TABLE = "/api/data/BlogPost";
 
-/** ===============================
- * GET LAST ID
- * =============================== */
+/* GET LAST ID */
 const getLastId = async (): Promise<number> => {
-  const res = await axiosInstance.get(
-    `${TABLE}?sortBy=id desc&pageSize=1`
-  );
+  const res = await axiosInstance.get(`${TABLE}?sortBy=id desc&pageSize=1`);
 
   if (!res.data?.length) return 0;
   return res.data[0].id;
 };
 
-/** ===============================
- * CREATE POST
- * =============================== */
+/* CREATE POST */
 const createPost = async (payload: Omit<CreateBlog, "id">) => {
   const lastId = await getLastId();
   const nextId = lastId + 1;
@@ -34,7 +28,6 @@ const createPost = async (payload: Omit<CreateBlog, "id">) => {
 
   console.log("FINAL PAYLOAD TO BACKEND:", payloadWithId);
 
-  // ✅ Zod validation
   const validated = CreateBlogSchema.parse(payloadWithId);
 
   const res = await axiosInstance.post(TABLE, validated);
@@ -42,9 +35,7 @@ const createPost = async (payload: Omit<CreateBlog, "id">) => {
   return BlogPostSchema.parse(res.data);
 };
 
-/** ===============================
- * GET POSTS
- * =============================== */
+/* GET POSTS */
 const getPosts = async () => {
   const res = await axiosInstance.get(`${TABLE}?sortBy=%60created%60%20desc`);
   return BlogListSchema.parse(res.data);

@@ -67,7 +67,7 @@ const Footer = () => {
                   color="white"
                   className="w-5 h-5 text-primary shrink-0"
                 />
-                <span>+62 267 8617000</span>
+                <span>+62 812 345678</span>
               </li>
               <li className="flex items-center gap-3 text-sm text-background/70">
                 <Mail color="white" className="w-5 h-5 text-primary shrink-0" />

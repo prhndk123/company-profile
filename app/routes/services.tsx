@@ -219,7 +219,7 @@ const Services = () => {
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className={`grid lg:grid-cols-2 gap-12 items-center ${
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-10 items-center ${
                   index % 2 === 1 ? "lg:flex-row-reverse" : ""
                 }`}
               >
@@ -242,14 +242,14 @@ const Services = () => {
                       <h4 className="font-heading font-bold mb-3">
                         Specifications
                       </h4>
-                      <ul className="space-y-2 w-100">
+                      <ul className="space-y-2 w-full max-w-full">
                         {engine.specs.map((spec) => (
                           <li
                             key={spec}
                             className="flex items-center gap-2 text-sm text-body"
                           >
                             <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
-                            <p className="size-full">{spec}</p>
+                            <p className="wrap-break-word">{spec}</p>
                           </li>
                         ))}
                       </ul>
@@ -265,7 +265,7 @@ const Services = () => {
                 <div
                   className={`${index % 2 === 1 ? "lg:order-1" : ""} relative`}
                 >
-                  <div className="aspect-4/3 rounded overflow-hidden shadow-xl">
+                  <div className="aspect-4/3 rounded max-w-full overflow-hidden shadow-xl">
                     <img
                       src={engine.image}
                       alt={engine.name}
